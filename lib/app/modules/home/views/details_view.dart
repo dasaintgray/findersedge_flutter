@@ -14,45 +14,47 @@ class DetailsView extends GetView {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(hc.searchList[indexControl].title),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            SizedBox(
-              child: FanCarouselImageSlider.sliderType2(
-                imagesLink: hc.searchList[indexControl].images,
-                isAssets: false,
-                autoPlay: false,
-                initalPageIndex: 0,
-                sliderHeight: 300,
-                currentItemShadow: const [],
-                sliderDuration: const Duration(milliseconds: 200),
-                imageRadius: 0,
-                slideViewportFraction: 1.2,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(hc.searchList[indexControl].title),
+          centerTitle: true,
+        ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              SizedBox(
+                child: FanCarouselImageSlider.sliderType2(
+                  imagesLink: hc.searchList[indexControl].images,
+                  isAssets: false,
+                  autoPlay: false,
+                  initalPageIndex: 0,
+                  sliderHeight: 300,
+                  currentItemShadow: const [],
+                  sliderDuration: const Duration(milliseconds: 200),
+                  imageRadius: 0,
+                  slideViewportFraction: 1.2,
+                ),
               ),
-            ),
-            Text(
-              hc.searchList[indexControl].price.toString(),
-              style: TextStyle(
-                fontSize: 25,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
+              Text(
+                hc.searchList[indexControl].price.toString(),
+                style: TextStyle(
+                  fontSize: 25,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            Text(
-              hc.searchList[indexControl].description,
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.red.shade700,
-                fontWeight: FontWeight.bold,
+              Text(
+                hc.searchList[indexControl].description,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.red.shade700,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

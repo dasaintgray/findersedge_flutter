@@ -34,6 +34,7 @@ dependencies:
   get: ^4.6.6
   http: ^1.2.2
   fan_carousel_image_slider: ^1.0.1
+  badges: ^3.1.2
 
 dev_dependencies:
   flutter_test:

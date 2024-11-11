@@ -26,7 +26,7 @@ class ServiceProvider extends ServiceErrorHandler {
   }
 
   static Future<ProductsModel?> sortProducts({String sortMode = 'title', String order = 'asc'}) async {
-    String params = '?sortBy=$sortMode&order=$order';
+    String params = '?sortBy=$sortMode&order=$order&limit=194';
     final response = await NetworkService.get(
         ServiceConstant.baseURL, '${ServiceConstant.productEndpoint}$params', ServiceConstant.httpHeader);
     if (response != null) {
