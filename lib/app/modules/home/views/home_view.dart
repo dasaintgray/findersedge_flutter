@@ -14,6 +14,16 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    tecSearch.addListener(() async {
+      if (hc.isItemFound.value == false && tecSearch.text.isEmpty) {
+        hc.isLoading.value = true;
+        final response = await hc.fetchProducts();
+        if (response!) {
+          hc.isLoading.value = false;
+        }
+      }
+    });
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -25,9 +35,9 @@ class HomeView extends GetView<HomeController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  flex: 4,
+                  flex: 3,
                   child: SizedBox(
-                    width: MediaQuery.sizeOf(context).width / 3,
+                    width: MediaQuery.sizeOf(context).width / 4,
                     height: 20,
                     child: TextField(
                       controller: tecSearch,
@@ -59,6 +69,10 @@ class HomeView extends GetView<HomeController> {
                           // print(value);
                           tecSearch.clear();
                           hc.searchList.refresh();
+                          hc.isLoading.value = false;
+                          hc.isItemFound.value = false;
+                        } else {
+                          hc.isItemFound.value = false;
                           hc.isLoading.value = false;
                         }
                       },
@@ -102,7 +116,7 @@ class HomeView extends GetView<HomeController> {
                     child: GestureDetector(
                       onTap: () {},
                       child: Badge(
-                        label: Text('1'),
+                        label: hc.shoppingCart.isEmpty ? null : Text(hc.shoppingCart.length.toStringAsFixed(0)),
                         smallSize: 1.5,
                         alignment: Alignment.topCenter,
                         child: Icon(
@@ -124,60 +138,68 @@ class HomeView extends GetView<HomeController> {
               ? Center(
                   child: CircularProgressIndicator.adaptive(),
                 )
-              : GridView.builder(
-                  itemCount: hc.searchList.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: context.orientation == Orientation.landscape ? 4 : 2,
-                    childAspectRatio: 0.75,
-                    crossAxisSpacing: 2,
-                    mainAxisSpacing: 2,
-                  ),
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        SizedBox(
-                          height: MediaQuery.sizeOf(context).height / 5,
-                          child: InkWell(
-                            onTap: () {
-                              Get.to(
-                                () => DetailsView(indexControl: index),
-                              );
-                            },
-                            child: Image.network(
-                              hc.searchList[index].thumbnail,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
+              : !hc.isItemFound.value
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          'assets/images/not-found.png',
+                          fit: BoxFit.contain,
                         ),
-                        GridTileBar(
-                          title: Text(
-                            hc.searchList[index].title,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  : GridView.builder(
+                      itemCount: hc.searchList.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: context.orientation == Orientation.landscape ? 4 : 2,
+                        childAspectRatio: 0.75,
+                        crossAxisSpacing: 2,
+                        mainAxisSpacing: 2,
+                      ),
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.sizeOf(context).height / 5,
+                              child: InkWell(
+                                onTap: () {
+                                  Get.to(
+                                    () => DetailsView(indexControl: index),
+                                  );
+                                },
+                                child: Image.network(
+                                  hc.searchList[index].thumbnail,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
                             ),
-                          ),
-                          subtitle: Text(
-                            '${hc.searchList[index].price}',
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
+                            GridTileBar(
+                              title: Text(
+                                hc.searchList[index].title,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Text(
+                                '${hc.searchList[index].price}',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              trailing: IconButton(
+                                onPressed: () {},
+                                icon: Icon(
+                                  Icons.shopping_bag_outlined,
+                                  color: Colors.red,
+                                ),
+                              ),
                             ),
-                          ),
-                          trailing: IconButton(
-                            onPressed: () {
-                              
-                            },
-                            icon: Icon(
-                              Icons.shopping_bag_outlined,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
+                          ],
+                        );
+                      }),
         ),
       ),
     );
